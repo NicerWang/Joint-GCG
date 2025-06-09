@@ -1,4 +1,10 @@
-# Code of `Joint-GCG: Unified Gradient-Based Poisoning Attacks on Retrieval-Augmented Generation Systems`
+# Joint-GCG: Unified Gradient-Based Poisoning Attacks on Retrieval-Augmented Generation Systems
+
+[Homepage](https://nicerwang.github.io/Joint-GCG/) | [Paper Here](https://arxiv.org/abs/2506.06151)
+
+This repository contains the official implementation of the paper, "**Joint-GCG: Unified Gradient-Based Poisoning Attacks on Retrieval-Augmented Generation Systems**". The paper proposed **Joint-GCG**, a novel framework that unifies gradient-based poisoning against RAG systems by jointly optimizing for retriever and generator, compelling them to produce malicious outputs with substantially higher success rates (on average 5%, up to 25% over prior methods) and unprecedented transferability to other models.
+
+![AdInject](./pages/src/assets/joint-gcg-framework.png)
 
 ## Key Components
 
@@ -33,3 +39,18 @@
   * `notebook/rag_eval.ipynb`
 
   * `notebook/phantom_eval.ipynb`, where each cluster #{id} refers to the corresponding trigger queries.
+
+## Citation
+
+If you find this work useful, please consider citing the following paper:
+```bibtex
+@misc{wang2025jointgcgunifiedgradientbasedpoisoning,
+      title={Joint-GCG: Unified Gradient-Based Poisoning Attacks on Retrieval-Augmented Generation Systems}, 
+      author={Haowei Wang and Rupeng Zhang and Junjie Wang and Mingyang Li and Yuekai Huang and Dandan Wang and Qing Wang},
+      year={2025},
+      eprint={2506.06151},
+      archivePrefix={arXiv},
+      primaryClass={cs.CR},
+      url={https://arxiv.org/abs/2506.06151}, 
+}
+```

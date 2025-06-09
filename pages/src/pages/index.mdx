@@ -1,0 +1,247 @@
+---
+layout: ../layouts/Layout.astro
+title: "Joint-GCG: Unified Gradient-Based Poisoning Attacks on Retrieval-Augmented Generation Systems"
+description: Joint-GCG, Unified Gradient-Based Poisoning Attacks on Retrieval-Augmented Generation Systems
+favicon: favicon.svg
+thumbnail: screenshot.png
+---
+
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import HighlightedSection from "../components/HighlightedSection.astro";
+import SmallCaps from "../components/SmallCaps.astro";
+import Figure from "../components/Figure.astro";
+import Image from "../components/Image.astro";
+import TwoColumns from "../components/TwoColumns.astro";
+import LaTeX from "../components/LaTeX.astro";
+import framework_figure from "../assets/joint-gcg-framework.png";
+import opti_figure from "../assets/rag-poisoning.png";
+
+<Header
+  title={frontmatter.title}
+  authors={[
+    {
+      name: "Haowei Wang",
+      institution: "",
+      notes: ["1,2,3†"],
+    },
+    {
+      name: "Rupeng Zhang",
+      institution: "",
+      notes: ["1,2,3†"],
+    },
+    {
+      name: "Junjie Wang",
+      institution: "",
+      notes: ["1,2,3*"],
+    },
+    {
+      name: "Mingyang Li",
+      institution: "",
+      notes: ["1,2,3*"],
+    },
+    {
+      name: "Yuekai Huang",
+      institution: "",
+      notes: ["1,2,3"],
+    },
+    {
+      name: "Dandan Wang",
+      institution: "",
+      notes: ["1,2,3*"],
+    },
+    {
+      name: "Qing Wang",
+      institution: "",
+      notes: ["1,2,3"],
+    },
+  ]}
+  notes={[
+    {
+      symbol: "1",
+      text: "State Key Laboratory of Intelligent Game, Beijing, China",
+    },
+    {
+      symbol: "2",
+      text: "Institute of Software, Chinese Academy of Sciences, Beijing, China",
+    },
+    {
+      symbol: "3",
+      text: "University of Chinese Academy of Sciences, Beijing, China",
+    },
+    {
+      symbol: "†",
+      text: "These authors contributed equally to this work",
+    },
+    {
+      symbol: "*",
+      text: "Corresponding authors",
+    }
+  ]}
+  links={[
+    {
+      name: "Paper",
+      url: "https://arxiv.org/pdf/2506.06151",
+      icon: "ri:file-pdf-2-line",
+    },
+    {
+      name: "Code",
+      url: "https://github.com/NicerWang/Joint-GCG",
+      icon: "ri:github-line",
+    },
+    {
+      name: "arXiv",
+      url: "https://arxiv.org/abs/2506.06151",
+      icon: "academicons:arxiv",
+    },
+  ]}
+/>
+
+<HighlightedSection>
+
+## TL;DR
+
+We propose **Joint-GCG**, a novel framework that unifies gradient-based poisoning against RAG systems by jointly optimizing for retriever and generator, compelling them to produce malicious outputs with substantially higher success rates (on average 5%, up to 25% over prior methods) and unprecedented transferability to other models.
+
+</HighlightedSection>
+
+<Figure caption="Demonstration of Joint-GCG">
+  <Image
+    source={framework_figure}
+    altText="Diagram illustrating the Joint-GCG attack methodology."
+  />
+</Figure>
+
+## Abstract
+
+Retrieval-Augmented Generation (RAG) systems enhance Large Language Models (LLMs) by incorporating external knowledge, but this exposes them to corpus poisoning attacks. Existing attack strategies often treat retrieval and generation stages disjointly, limiting their effectiveness. In this paper, we propose Joint-GCG, the first framework to unify gradient-based poisoning attacks across both retriever and generator models in RAG systems. Joint-GCG introduces three key innovations: Cross-Vocabulary Projection (CVP) for aligning embedding spaces, Gradient Tokenization Alignment (GTA) for synchronizing token-level gradients, and Adaptive Weighted Fusion (AWF) for dynamically balancing attack objectives. Evaluations demonstrate Joint-GCG achieves significantly higher attack success rates (ASR) than previous methods (at most 25% and an average of 5% higher) and shows unprecedented transferability to unseen models, even when optimized under white-box assumptions. This work fundamentally reshapes our understanding of vulnerabilities within RAG systems by showcasing the power of unified, joint optimization for crafting potent poisoning attacks.
+
+## Key Findings
+
+Our research on Joint-GCG revealed several critical aspects of RAG system vulnerabilities:
+
+1.  **Novel Unified Attack Framework:** We proposed Joint-GCG, the first framework to unify gradient-based poisoning attacks by jointly optimizing across both retriever and generator components of RAG systems.
+2.  **Innovative Gradient Harmonization:** Introduced three key techniques:
+    *   **Cross-Vocabulary Projection (CVP):** Aligns disparate embedding spaces between retriever and generator.
+    *   **Gradient Tokenization Alignment (GTA):** Synchronizes token-level gradient signals despite different tokenization schemes.
+    *   **Adaptive Weighted Fusion (AWF):** Dynamically balances retrieval and generation attack objectives for optimal impact.
+3.  **Superior Attack Efficacy:** Joint-GCG significantly outperforms existing state-of-the-art methods, achieving at most 25% and an average of 5% higher Attack Success Rates in various settings.
+4.  **Unprecedented Transferability:** Poisons generated by Joint-GCG under a white-box assumption demonstrate strong transferability to unseen retriever and generator models, including black-box commercial LLMs, highlighting a practical gray-box attack vector.
+5.  **Effectiveness in Diverse Scenarios:** Demonstrated high efficacy in targeted query poisoning, batch query poisoning, and when using synthetic corpora for attack optimization.
+6.  **Robustness Against Defenses:** Joint-GCG maintains considerable attack potency even against common defenses like SmoothLLM and perplexity-based filtering.
+
+## Technical Approach
+
+Joint-GCG's methodology focuses on unifying the poisoning attack across the RAG pipeline by simultaneously targeting both the retriever and the generator through gradient-based optimization.
+
+### Threat Model
+
+1.  **White-box Access:** Assumes full white-box access to both retriever and generator models for gradient computation during poison crafting.
+2.  **Gray-box Corpus Access:** Assumes the attacker can inject a small number of poisoned documents into the corpus but cannot modify existing ones.
+
+### Core Innovations for Joint Optimization
+
+#### 1. Cross-Vocabulary Projection (CVP):
+    *   Addresses vocabulary mismatch between retriever and generator.
+    *   Utilizes an autoencoder trained on shared tokens to learn a mapping between embedding spaces.
+    *   Projects retriever gradients into the generator's vocabulary space for alignment.
+
+#### 2. Gradient Tokenization Alignment (GTA):
+    *   Handles differing tokenization schemes by decomposing token gradients to a character level.
+    *   Reconstructs retriever gradients aligned with the generator's tokenization by averaging character-level gradients.
+
+#### 3. Adaptive Weighted Fusion (AWF):
+    *   Dynamically combines aligned gradients from the retriever and generator.
+    *   Uses an adaptive weighting parameter (<LaTeX formula='\alpha'inline="true" />) based on a "stability metric" (<LaTeX formula='D_{stability}'inline="true" />) of the poisoned document's retrieval rank to balance retrieval and generation objectives.
+
+## Results
+
+Joint-GCG was evaluated on MS MARCO, NQ, and HotpotQA datasets using Contriever/BGE retrievers and Llama3/Qwen2 generators.
+
+### Main Attack Effectiveness (Targeted Query Poisoning)
+
+Experiments demonstrated Joint-GCG's superiority over baselines like GCG (PoisonedRAG with GCG on generator) and LIAR.
+
+**Table 1: Main Results on MS MARCO with Contriever Retriever (Partial)**
+(Corresponds to Table 1 in the Joint-GCG paper)
+
+| Attack / LLM   | Metric      | Llama3          | Qwen2           |
+| :------------- | :---------- | :-------------- | :-------------- |
+| GCG            | <LaTeX formula='ASR_{ret}' inline="true"/> (%) | 96.00           | 95.67           |
+|                | <LaTeX formula='ASR_{gen}'inline="true" /> (%) | 90.0 (76.7)     | 91.0 (80.0)     |
+|                | <LaTeX formula='pos_p'inline="true" />       | 1.36            | 1.43            |
+| LIAR           | <LaTeX formula='ASR_{ret}' inline="true"/> (%) | **100.00**      | **100.00**      |
+|                | <LaTeX formula='ASR_{gen}'inline="true" /> (%) | 89.0 (74.4)     | 95.3 (88.9)     |
+|                | <LaTeX formula='pos_p'inline="true" />       | 1.13            | 1.08            |
+| **Joint-GCG**  | <LaTeX formula='ASR_{ret}' inline="true"/> (%) | **100.00**      | **100.00**      |
+|                | <LaTeX formula='ASR_{gen}'inline="true" /> (%) | **94.0 (86.0)** | **96.3 (91.1)** |
+|                | <LaTeX formula='pos_p'inline="true" />       | **1.01**        | **1.05**        |
+| *w/o optimize* | <LaTeX formula='ASR_{gen}'inline="true" /> (%) | 51.0            | 49.0            |
+
+* <LaTeX formula='ASR_{ret}' inline="true"/>: Retrieval Attack Success Rate, <LaTeX formula='ASR_{gen}'inline="true" />: Generation Attack Success Rate (value in parenthesis is ASR on initially failed attacks), <LaTeX formula='pos_p'inline="true" />: Average Position of Poisoned Document (lower is better).*
+Joint-GCG consistently achieves higher <LaTeX formula='ASR_{gen}'inline="true" /> and better <LaTeX formula='pos_p'inline="true" />. Similar trends were observed for BGE retriever and other datasets like NQ and HotpotQA.
+
+### Ablation Study Impact
+
+Ablation studies confirmed the contribution of each component within Joint-GCG, using Contriever retriever.
+
+**Table 2: Ablation Study Results on MS MARCO (Partial, <LaTeX formula='ASR_{gen}'inline="true" /> %)**
+(Corresponds to Table 2 in the Joint-GCG paper)
+
+| Settings         | Llama3    | Qwen2     |
+| :--------------- | :-------- | :-------- |
+| Full Joint-GCG   | **94.00** | **96.33** |
+| w/o CVP + GTA    | 93.33     | 96.00     |
+| w/o <LaTeX formula='Loss_{ret}'inline="true" /> | 91.00     | 92.33     |
+| Base (GCG)       | 90.00     | 91.00     |
+
+Removing CVP+GTA or the retriever-side loss (<LaTeX formula='Loss_{ret}'inline="true" />) led to decreases in <LaTeX formula='ASR_{gen}'inline="true" />, confirming their importance. AWF also outperformed fixed weighting schemes.
+
+### Batch Query Poisoning Effectiveness
+
+Joint-GCG also outperformed Phantom in batch query poisoning scenarios (Denial-of-Service target).
+
+**Table 3: Batch Poisoning Results for "amazon" Trigger (Partial, Llama3, Contriever)**
+(Corresponds to Table 4 in the Joint-GCG paper, <LaTeX formula='ASR_{gen}'inline="true" /> %)
+
+| Attack / Step | 0     | 4                 | 8                 | 16                | 32                |
+| :------------ | :---- | :---------------- | :---------------- | :---------------- | :---------------- |
+| Phantom       | 76.00 | 76.00 (16.67)     | 76.00 (33.33)     | 68.00 (16.67)     | 80.00 (33.33)     |
+| **Joint-GCG** | 76.00 | **88.00 (50.00)** | **88.00 (50.00)** | **88.00 (50.00)** | **88.00 (50.00)** |
+
+Joint-GCG achieved higher <LaTeX formula='ASR_{gen}'inline="true" /> more quickly and consistently across different triggers.
+
+### Defense Experiments
+
+Joint-GCG maintained notable effectiveness even against common defenses.
+
+**Table 4: Impact of SmoothLLM Defense on MS MARCO (Partial)**
+(Corresponds to Table 5 in the Joint-GCG paper)
+
+| Retriever  | Generator | <LaTeX formula='ASR_{gen}'inline="true" /> (w/o SmoothLLM) | <LaTeX formula='ASR_{gen}'inline="true" /> (w/ SmoothLLM) |
+| :--------- | :-------- | :---------------------- | :--------------------- |
+| Contriever | Llama3    | 94%                     | 53%                    |
+|            | Qwen2     | 96%                     | 56%                    |
+| BGE        | Llama3    | 87%                     | 47%                    |
+|            | Qwen2     | 92%                     | 41%                    |
+
+While SmoothLLM reduced <LaTeX formula='ASR_{gen}'inline="true" />, Joint-GCG remained significantly potent. Similar resilience was observed against perplexity-based filtering, where Joint-GCG with perplexity constraints still achieved high <LaTeX formula='ASR_{gen}'inline="true" /> (e.g., 73.33%).
+
+*(Qualitative note on Transferability: Joint-GCG poisons showed strong cross-retriever transferability (e.g., <LaTeX formula='ASR_{ret}' inline="true"/> of 80-100% between Contriever and BGE). Cross-generator transferability was also notable (e.g., ~41% <LaTeX formula='ASR_{gen}'inline="true" /> between Llama3 and Qwen2), with even a slight increase in ASR against a black-box model like GPT-4o compared to unoptimized poisons.)*
+
+## Conclusion
+
+In this paper, we introduced Joint-GCG, a novel framework that unifies gradient-based poisoning attacks against RAG systems by jointly optimizing across retriever and generator components. Through innovative techniques like Cross-Vocabulary Projection, Gradient Tokenization Alignment, and Adaptive Weighted Fusion, Joint-GCG significantly surpasses existing methods in attack success rate and demonstrates unprecedented poison transferability. Our findings reveal critical vulnerabilities in RAG systems stemming from the synergistic effects of joint optimization, underscoring the urgent need for more robust, retrieval-aware defense mechanisms.
+## BibTeX Citation
+
+```bibtex
+@misc{wang2025jointgcgunifiedgradientbasedpoisoning,
+      title={Joint-GCG: Unified Gradient-Based Poisoning Attacks on Retrieval-Augmented Generation Systems}, 
+      author={Haowei Wang and Rupeng Zhang and Junjie Wang and Mingyang Li and Yuekai Huang and Dandan Wang and Qing Wang},
+      year={2025},
+      eprint={2506.06151},
+      archivePrefix={arXiv},
+      primaryClass={cs.CR},
+      url={https://arxiv.org/abs/2506.06151}, 
+}
+```
